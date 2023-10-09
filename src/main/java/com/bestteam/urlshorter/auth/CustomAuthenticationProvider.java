@@ -3,7 +3,7 @@ package com.bestteam.urlshorter.auth;
 
 
 import com.bestteam.urlshorter.models.UserUrl;
-import com.bestteam.urlshorter.service.UserDetailsServiceImpl;
+import com.bestteam.urlshorter.service.Impl.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,8 +15,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-;
 
 
 @Service

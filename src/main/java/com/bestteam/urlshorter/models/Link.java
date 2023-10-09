@@ -1,13 +1,12 @@
 package com.bestteam.urlshorter.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Data
 @Entity
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -20,7 +19,9 @@ public class Link {
     String link;
 
     @Column(name = "open_count")
-    int openCount;
+    Long openCount;
 
-    int user_id;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    UserUrl user;
 }

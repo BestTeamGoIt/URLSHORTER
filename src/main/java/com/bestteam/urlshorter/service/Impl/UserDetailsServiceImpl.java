@@ -1,10 +1,12 @@
-package com.bestteam.urlshorter.service;
+package com.bestteam.urlshorter.service.Impl;
 
 
 import com.bestteam.urlshorter.constants.AuthenticationType;
 import com.bestteam.urlshorter.constants.Role;
 import com.bestteam.urlshorter.models.UserUrl;
 import com.bestteam.urlshorter.repository.UserUrlRepository;
+import com.bestteam.urlshorter.service.ConfirmationToken;
+import com.bestteam.urlshorter.service.ConfirmationTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
