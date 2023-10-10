@@ -1,4 +1,4 @@
-package com.bestteam.urlshorter.Mapper;
+package com.bestteam.urlshorter.mapper;
 
 import com.bestteam.urlshorter.dto.LinkDto;
 import com.bestteam.urlshorter.models.Link;

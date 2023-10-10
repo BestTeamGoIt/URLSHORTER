@@ -1,6 +1,6 @@
 package com.bestteam.urlshorter.service.Impl;
 
-import com.bestteam.urlshorter.Mapper.Mapper;
+import com.bestteam.urlshorter.mapper.Mapper;
 import com.bestteam.urlshorter.dto.LinkDto;
 import com.bestteam.urlshorter.exception.ItemNotFoundException;
 import com.bestteam.urlshorter.models.Link;
@@ -36,7 +36,6 @@ public class LinkServiceImpl implements LinkService {
     }
   }
 
-
   private Optional<String> generate(String link) {
     if (!isLinkValid(link)) {
       return Optional.empty();
@@ -61,6 +60,25 @@ public class LinkServiceImpl implements LinkService {
       result.append(c);
     }
     return Optional.of(result.toString());
+  }
+
+  @Override
+  public void isActive(LinkDto linkDto) {
+    if(linkDto.getCreationDateTime().equals(linkDto.getExpirationDateTime())) {
+      Link link = mapper.toEntity(linkDto);
+      link.setIsActive(false);
+      linkRepository.save(link);
+    }
+  }
+
+  @Override
+  public List<LinkDto> getAllActive(){
+    return linkRepository
+      .findAll()
+      .stream()
+      .filter(Link::getIsActive)
+      .map(mapper::toDto)
+      .toList();
   }
 
   @Override

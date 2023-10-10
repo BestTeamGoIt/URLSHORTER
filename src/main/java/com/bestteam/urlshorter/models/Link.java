@@ -3,6 +3,8 @@ package com.bestteam.urlshorter.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 @Getter
@@ -20,6 +22,14 @@ public class Link {
 
     @Column(name = "open_count")
     Long openCount;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    LocalDateTime creationDateTime;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    LocalDateTime expirationDateTime = creationDateTime.plusDays(5);
+
+    Boolean isActive = true;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
