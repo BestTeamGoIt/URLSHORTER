@@ -76,7 +76,6 @@ public class LinkController {
     public ResponseEntity<?> deleteLinkForUser(@PathVariable Long userId, @RequestParam String shortLink) {
         try {
             UserUrl user = userUrlRepository.findById(userId).orElse(null);
-
             if (user == null) {
                 return ResponseEntity.notFound().build();
             }
