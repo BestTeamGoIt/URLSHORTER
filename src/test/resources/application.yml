@@ -4,14 +4,11 @@ server:
 
 spring:
   datasource:
-    own:
-      username: ${CONTAINER.USERNAME}
-      password: ${CONTAINER.PASSWORD}
-      url: ${CONTAINER.URL}
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     username: ${CONTAINER.USERNAME}
     password: ${CONTAINER.PASSWORD}
-    url: ${CONTAINER.URL}
+    url: ${CONTAINER.TCURL}
+
   jpa:
     hibernate:
       ddl-auto: update

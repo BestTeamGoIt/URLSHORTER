@@ -33,7 +33,9 @@ public class SpringBootApplicationTest {
             TestPropertyValues.of(
                     "CONTAINER.USERNAME=" + postgreSQLContainer.getUsername(),
                     "CONTAINER.PASSWORD=" + postgreSQLContainer.getPassword(),
-                    "CONTAINER.URL=" + postgreSQLContainer.getJdbcUrl()
+                    "CONTAINER.URL=" + postgreSQLContainer.getJdbcUrl(),
+                    "CONTAINER.TCURL=" + postgreSQLContainer.getJdbcUrl().replaceAll("jdbc:","jdbc:tc:")
+
             ).applyTo(configurableApplicationContext.getEnvironment());
         }
     }
