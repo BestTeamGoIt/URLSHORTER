@@ -1,6 +1,5 @@
 package com.bestteam.urlshorter.models;
 
-
 import com.bestteam.urlshorter.constants.AuthenticationType;
 import com.bestteam.urlshorter.constants.Role;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -35,6 +34,10 @@ public class UserUrl implements UserDetails {
     //TODO NotNull
     private String email;
     private String password;
+
+    @OneToMany(mappedBy = "user")
+    private List<Link> links;
+
 
     private boolean enabled = false;
     private boolean locked = false;
