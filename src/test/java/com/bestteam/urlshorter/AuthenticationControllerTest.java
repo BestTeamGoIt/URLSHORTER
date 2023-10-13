@@ -29,8 +29,7 @@ public class AuthenticationControllerTest extends SpringBootApplicationTest {
     @Test
     void registrationTest() throws Exception {
         RegistrationRequest request = new RegistrationRequest();
-        request.setFirstname("Ivan");
-        request.setLastname("Argon");
+        request.setUsername("Ivan1");
         request.setEmail("ivanargon@gmail.com");
         request.setPassword("223123123gsgd");
         request.setRole(Role.USER);
@@ -47,8 +46,7 @@ public class AuthenticationControllerTest extends SpringBootApplicationTest {
     @Test
     void registrationTest_IfPasswordIsNullThenReturnBadRequest() throws Exception {
         RegistrationRequest request = new RegistrationRequest();
-        request.setFirstname("Ivan");
-        request.setLastname("Argon");
+        request.setUsername("Ivanargon");
         request.setEmail("ivanargon@gmail.com");
         request.setPassword(null);
         request.setRole(Role.USER);
@@ -63,8 +61,7 @@ public class AuthenticationControllerTest extends SpringBootApplicationTest {
     @Test
     void authenticateTest() throws Exception {
         RegistrationRequest request = new RegistrationRequest();
-        request.setFirstname("Ivan");
-        request.setLastname("Argon");
+        request.setUsername("Ivanoletes");
         request.setEmail("oletes@gmail.com");
         request.setPassword("asfggdhgh2");
         request.setRole(Role.USER);
@@ -95,8 +92,7 @@ public class AuthenticationControllerTest extends SpringBootApplicationTest {
     void refreshTokenTest() throws Exception {
         // Registration
         RegistrationRequest request = new RegistrationRequest();
-        request.setFirstname("Ivan");
-        request.setLastname("Argon");
+        request.setUsername("Ivankof");
         request.setEmail("kofnanf@gmail.com");
         request.setPassword("asfggdhgh2");
         request.setRole(Role.USER);
