@@ -65,7 +65,7 @@ public class AuthenticationService {
 
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
-        revokeAllUserTokens(user);
+        deleteAllUserTokens(user);
         saveUserToken(user, jwtToken);
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
@@ -79,7 +79,7 @@ public class AuthenticationService {
 
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
-        revokeAllUserTokens(user);
+        deleteAllUserTokens(user);
         saveUserToken(user, jwtToken);
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
@@ -114,15 +114,11 @@ public class AuthenticationService {
         tokenRepository.save(token);
     }
 
-    private void revokeAllUserTokens(UserUrl userUrl) {
+    private void deleteAllUserTokens(UserUrl userUrl) {
         var validUserTokens = tokenRepository.findAllValidTokenByUser(userUrl.getId());
         if (validUserTokens.isEmpty())
             return;
-        validUserTokens.forEach(token -> {
-            token.setExpired(true);
-            token.setRevoked(true);
-        });
-        tokenRepository.saveAll(validUserTokens);
+        tokenRepository.deleteAll(validUserTokens);
     }
 
     public AuthenticationResponse refreshToken(
@@ -144,7 +140,7 @@ public class AuthenticationService {
                     .orElseThrow();
             if (jwtService.isTokenValid(refreshToken, user)) {
                 accessToken = jwtService.generateToken(user);
-                revokeAllUserTokens(user);
+                deleteAllUserTokens(user);
                 saveUserToken(user, accessToken);
                 var authResponse = AuthenticationResponse.builder()
                         .accessToken(accessToken)

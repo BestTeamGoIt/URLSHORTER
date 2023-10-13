@@ -4,6 +4,7 @@ package com.bestteam.urlshorter.auth;
 import com.bestteam.urlshorter.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +26,9 @@ public class AuthenticationController {
 
     @PostMapping("/registration")
     public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody RegistrationRequest request
-    ) {
-        return ResponseEntity.ok(authenticationService.register(request));
+            @Valid
+            @RequestBody RegistrationRequest request) {
+      return ResponseEntity.ok(authenticationService.register(request));
     }
 
     @PostMapping("/authenticate")
