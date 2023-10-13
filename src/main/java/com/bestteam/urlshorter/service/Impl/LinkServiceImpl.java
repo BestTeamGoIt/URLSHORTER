@@ -1,27 +1,37 @@
 package com.bestteam.urlshorter.service.Impl;
 
+import com.bestteam.urlshorter.dto.CreateLinkDto;
+import com.bestteam.urlshorter.mapper.LinkMapper;
 import com.bestteam.urlshorter.mapper.Mapper;
 import com.bestteam.urlshorter.dto.LinkDto;
 import com.bestteam.urlshorter.exception.ItemNotFoundException;
+import com.bestteam.urlshorter.models.Constants;
 import com.bestteam.urlshorter.models.Link;
+import com.bestteam.urlshorter.models.UserUrl;
 import com.bestteam.urlshorter.repository.LinkRepository;
+import com.bestteam.urlshorter.repository.UserUrlRepository;
 import com.bestteam.urlshorter.service.LinkService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
 @RequiredArgsConstructor
+@EnableScheduling
 public class LinkServiceImpl implements LinkService {
   private final LinkRepository linkRepository;
+  private final UserUrlRepository userRepository;
   private final Mapper mapper;
+  private final LinkMapper linkMapper;
 
 
   private Boolean isLinkValid(String link) {
@@ -36,19 +46,19 @@ public class LinkServiceImpl implements LinkService {
     }
   }
 
-  private Optional<String> generate(String link) {
+  private String generate(String link) {
     if (!isLinkValid(link)) {
-      return Optional.empty();
+      throw new IllegalArgumentException("Invalid link: " + link);
     }
 
     List<Character> characters = new ArrayList<>();
-    for (char c = 'a'; c <= 'z' ; c++) {
+    for (char c = 'a'; c <= 'z'; c++) {
       characters.add(c);
     }
-    for (char c = 'A'; c <= 'Z' ; c++) {
+    for (char c = 'A'; c <= 'Z'; c++) {
       characters.add(c);
     }
-    for (char c = '0'; c <= '9' ; c++) {
+    for (char c = '0'; c <= '9'; c++) {
       characters.add(c);
     }
 
@@ -59,66 +69,79 @@ public class LinkServiceImpl implements LinkService {
       Character c = characters.get(0);
       result.append(c);
     }
-    return Optional.of(result.toString());
+    return result.toString();
   }
 
-  @Override
-  public void isActive(LinkDto linkDto) {
-    if(linkDto.getCreationDateTime().equals(linkDto.getExpirationDateTime())) {
-      Link link = mapper.toEntity(linkDto);
-      link.setIsActive(false);
-      linkRepository.save(link);
+  @Scheduled(fixedDelay = 86400000)
+  private void updateExpiration() {
+    List<LinkDto> links = getAllActive();
+    if(!links.isEmpty()) {
+      links.stream()
+        .map(linkMapper::linkDtoToLink)
+        .forEach(this::isActive);
     }
+
   }
 
-  @Override
-  public List<LinkDto> getAllActive(){
+  private void isActive(Link link) {
+    OffsetDateTime updatedExpirationDate = link.getExpirationDateTime().minusDays(1);
+    link.setExpirationDateTime(updatedExpirationDate);
+    if (updatedExpirationDate.equals(link.getCreationDateTime())) {
+      link.setIsActive(false);
+    }
+
+    linkRepository.save(link);
+  }
+
+  public List<LinkDto> getAllActive() {
     return linkRepository
       .findAll()
       .stream()
       .filter(Link::getIsActive)
-      .map(mapper::toDto)
+      .map(linkMapper::linkToLinkDto)
       .toList();
   }
 
-  @Override
-  public void create(LinkDto linkDto) {
-    Optional<String> generatedShortLink = generate(linkDto.getLink());
+  public LinkDto create(CreateLinkDto linkDto) {
+    String generatedShortLink = generate(linkDto.getLink());
 
-    if (generatedShortLink.isPresent()) {
-      Link link = mapper.toEntity(linkDto);
-      link.setShortLink(generatedShortLink.get());
-      linkRepository.save(link);
-    } else {
-      throw new IllegalArgumentException("Invalid link provided.");
-    }
+    Long userId = linkDto.getUserId();
+    UserUrl user = userRepository.findById(userId).orElseThrow(() -> new ItemNotFoundException(UserUrl.class, userId));
+
+    Link link = mapper.toEntity(linkDto);
+    link.setShortLink(generatedShortLink);
+    link.setUser(user);
+    link.setOpenCount(0L);
+    link.setIsActive(true);
+    link.setCreationDateTime(OffsetDateTime.now(Constants.TIME_ZONE));
+    link.setExpirationDateTime(OffsetDateTime.now(Constants.TIME_ZONE).plusDays(7));
+    linkRepository.save(link);
+
+    return linkMapper.linkToLinkDto(link);
   }
 
-  @Override
-  public LinkDto get(String shortLink){
-    return linkRepository
-      .findById(shortLink)
-      .map(mapper::toDto)
-      .orElseThrow(
-        () -> new ItemNotFoundException(Link.class, shortLink)
-      );
+  public LinkDto get(String link) {
+    Link linkEntity = linkRepository.findById(link).orElseThrow(() -> new ItemNotFoundException(Link.class, link));
+    linkEntity.setOpenCount(
+      linkEntity.getOpenCount() + 1
+    );
+
+    linkRepository.save(linkEntity);
+    return linkMapper.linkToLinkDto(linkEntity);
   }
 
-  @Override
-  public void delete(String shortLink) {
-    linkRepository.deleteById(shortLink);
+  public void delete(String link) {
+    linkRepository.deleteById(link);
   }
 
-  @Override
   public List<LinkDto> getAll() {
     return linkRepository
       .findAll()
       .stream()
-      .map(mapper::toDto)
+      .map(linkMapper::linkToLinkDto)
       .toList();
   }
 
-  @Override
   public void update(String shortLink, LinkDto linkDto) {
     Link link = linkRepository.findById(shortLink).orElseThrow(() -> new ItemNotFoundException(Link.class, shortLink));
     mapper.merge(linkDto, link);
