@@ -24,9 +24,11 @@ public class Link {
     Long openCount;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "creation_date")
     LocalDateTime creationDateTime;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "expiration_date")
     LocalDateTime expirationDateTime = creationDateTime.plusDays(5);
 
     Boolean isActive = true;
