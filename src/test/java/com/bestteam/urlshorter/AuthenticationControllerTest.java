@@ -50,8 +50,8 @@ public class AuthenticationControllerTest extends SpringBootApplicationTest {
     void registrationTest_IfPasswordIsNullThenReturnBadRequest() throws Exception {
         RegistrationRequest request = new RegistrationRequest();
         String uid = UUID.randomUUID().toString();
-        request.setUsername("Ivanargon_" + uid);
-        request.setEmail("ivanargon_" + uid + "@gmail.com");
+        request.setUsername(uid);
+        request.setEmail(uid + "@gmail.com");
         request.setPassword(null);
         request.setRole(Role.USER);
 
