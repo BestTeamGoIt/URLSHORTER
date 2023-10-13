@@ -40,6 +40,9 @@ public class AuthenticationService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final CustomAuthenticationProvider customAuthenticationProvider;
     public AuthenticationResponse register(RegistrationRequest request) {
+        if (userUrlRepository.findByUsername(request.getUsername()).isPresent()) {
+            throw new BadCredentialsException("User exist");
+        }
         var user = UserUrl.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
