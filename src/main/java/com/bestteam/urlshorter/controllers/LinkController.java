@@ -20,7 +20,7 @@ public class LinkController {
     private final LinkService linkService;
     private final UserUrlRepository userUrlRepository;
 
-    @PostMapping("/links/active/{userId}")
+    @GetMapping("/links/active/{userId}")
     public ResponseEntity<?> createActiveLink(@PathVariable Long userId, @RequestBody LinkDto linkDto) {
         try {
             UserUrl user = userUrlRepository.findById(userId).orElse(null);
@@ -80,6 +80,25 @@ public class LinkController {
                 return ResponseEntity.notFound().build();
             }
             linkService.delete(shortLink);
+            return ResponseEntity.ok().build();
+        } catch (ItemNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
+    }
+    @PutMapping("/links/update/{userId}")
+    public ResponseEntity<?> updateLinkForUser(
+            @PathVariable Long userId,
+            @RequestParam String shortLink,
+            @RequestBody LinkDto linkDto
+    ) {
+        try {
+            UserUrl user = userUrlRepository.findById(userId).orElse(null);
+            if (user == null) {
+                return ResponseEntity.notFound().build();
+            }
+            linkService.update(shortLink, linkDto);
             return ResponseEntity.ok().build();
         } catch (ItemNotFoundException e) {
             return ResponseEntity.notFound().build();
