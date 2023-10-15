@@ -18,52 +18,49 @@ public class LinkController {
 
     private final LinkService linkService;
 
-    @GetMapping("/links/active/{userId}")
-    public ResponseEntity<?> createActiveLink(@PathVariable Long userId, @RequestBody CreateLinkDto createLinkDto) {
+    @GetMapping("/all/active")
+    public ResponseEntity<List<LinkDto>> getAllLinksForUser(@RequestParam Long userId) {
         try {
-            LinkDto linkDto = linkService.create(createLinkDto);
-            if (linkDto == null) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Invalid link provided.");
+            List<LinkDto> links = linkService.getAllActive();
+            return ResponseEntity.ok(links);
         } catch (ItemNotFoundException e) {
             return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
         }
     }
-
-    @GetMapping("/links/{userId}")
-    public ResponseEntity<List<LinkDto>> getAllLinksForUser(@PathVariable Long userId) {
+    @GetMapping("/all")
+    public ResponseEntity<List<LinkDto>> getAllLinks() {
         try {
             List<LinkDto> links = linkService.getAll();
             return ResponseEntity.ok(links);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        } catch (ItemNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 
-    @PostMapping("/create/{userId}")
-    public ResponseEntity<?> createLinkForUser(@PathVariable Long userId, @RequestBody CreateLinkDto createLinkDto) {
+    @PostMapping("/create")
+    public ResponseEntity<?> createLinkForUser(@RequestParam Long userId, @RequestBody CreateLinkDto createLinkDto) {
         try {
-            LinkDto linkDto = linkService.create(createLinkDto);
-            if (linkDto == null) {
-                return ResponseEntity.notFound().build();
-            }
+            createLinkDto.setUserId(userId);
+            linkService.create(createLinkDto);
             return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Invalid link provided.");
         } catch (ItemNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
         }
     }
+    @GetMapping("/links/{shortLink}")
+    public ResponseEntity<LinkDto> getLinkByShortLink(@RequestParam String shortLink) {
+        try {
+            linkService.get(shortLink);
+            return ResponseEntity.ok().build();
+        } catch (ItemNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-    @DeleteMapping("/delete/{userId}")
-    public ResponseEntity<?> deleteLinkForUser(@PathVariable Long userId, @RequestParam String shortLink) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteLinkForUser(@RequestParam Long userId, @RequestParam String shortLink) {
         try {
             linkService.delete(shortLink);
             return ResponseEntity.ok().build();
@@ -74,9 +71,8 @@ public class LinkController {
         }
     }
 
-    @PutMapping("/links/update/{userId}")
+    @PutMapping("/links/update")
     public ResponseEntity<?> updateLinkForUser(
-            @PathVariable Long userId,
             @RequestParam String shortLink,
             @RequestBody LinkDto linkDto
     ) {
