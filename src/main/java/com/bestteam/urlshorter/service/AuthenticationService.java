@@ -2,6 +2,8 @@ package com.bestteam.urlshorter.service;
 
 
 import com.bestteam.urlshorter.auth.*;
+import com.bestteam.urlshorter.exception.ItemNotFoundException;
+import com.bestteam.urlshorter.models.Link;
 import com.bestteam.urlshorter.models.Token;
 import com.bestteam.urlshorter.repository.TokenRepository;
 import com.bestteam.urlshorter.constants.TokenType;
@@ -40,9 +42,8 @@ public class AuthenticationService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final CustomAuthenticationProvider customAuthenticationProvider;
     public AuthenticationResponse register(RegistrationRequest request) {
-        if (userUrlRepository.findByUsername(request.getUsername()).isPresent()) {
-            throw new BadCredentialsException("User exist");
-        }
+        userUrlRepository.findByUsername(request.getUsername()).ifPresent(new ItemNotFoundException("User exist!"));            ;
+
         var user = UserUrl.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
