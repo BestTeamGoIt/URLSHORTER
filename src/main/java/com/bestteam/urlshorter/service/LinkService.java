@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface LinkService {
   void update(String shortLink, LinkDto linkDto);
-  List<LinkDto> getAll();
+  List<LinkDto> getAllById(Long userId);
   void delete(String link);
   LinkDto get(String link);
   LinkDto create(CreateLinkDto linkDto);
-  List<LinkDto> getAllActive();
+  List<LinkDto> getAllActiveById(Long userId);
 }
