@@ -38,9 +38,8 @@ public class LinkController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createLinkForUser(@RequestParam Long userId, @RequestBody CreateLinkDto createLinkDto) {
+    public ResponseEntity<?> createLinkForUser( @RequestBody CreateLinkDto createLinkDto) {
         try {
-            createLinkDto.setUserId(userId);
             linkService.create(createLinkDto);
             return ResponseEntity.ok().build();
         } catch (ItemNotFoundException e) {
