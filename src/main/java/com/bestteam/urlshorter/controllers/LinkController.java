@@ -29,6 +29,16 @@ public class LinkController {
         }
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<LinkDto>> getAllLinks(@RequestParam Long userId) {
+        try {
+            List<LinkDto> links = linkService.getAllById(userId);
+            return ResponseEntity.ok(links);
+        } catch (ItemNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> createLinkForUser( @RequestBody CreateLinkDto createLinkDto) {
         try {
