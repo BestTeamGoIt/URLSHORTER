@@ -2,14 +2,18 @@ package com.bestteam.urlshorter;
 
 
 import com.bestteam.urlshorter.controllers.LinkController;
+import com.bestteam.urlshorter.dto.CreateLinkDto;
 import com.bestteam.urlshorter.dto.LinkDto;
 import com.bestteam.urlshorter.models.UserUrl;
 import com.bestteam.urlshorter.repository.UserUrlRepository;
+import com.bestteam.urlshorter.service.LinkService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -17,11 +21,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class LinkControllerTest {
+//@RunWith(MockitoJUnitRunner.class)
+//public class LinkControllerTest {
 //
 //    @InjectMocks
 //    private LinkController linkController;
@@ -48,7 +52,7 @@ public class LinkControllerTest {
 //
 //        verify(userUrlRepository).findById(userId);
 //        verify(linkService).getAll();
-//        assertSame(HttpStatus.OK, response.getStatusCode());
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
 //        assertTrue(response.getBody().isEmpty());
 //    }
 //
@@ -61,13 +65,13 @@ public class LinkControllerTest {
 //
 //        verify(userUrlRepository).findById(userId);
 //        verify(linkService, never()).getAll();
-//        assertSame(HttpStatus.NOT_FOUND, response.getStatusCode());
+//        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 //    }
 //
 //    @Test
 //    public void testCreateLinkForUser() {
 //        Long userId = 1L;
-//        LinkDto linkDto = new LinkDto();
+//        CreateLinkDto linkDto = new CreateLinkDto();
 //        UserUrl user = new UserUrl();
 //        when(userUrlRepository.findById(userId)).thenReturn(Optional.of(user));
 //
@@ -75,20 +79,20 @@ public class LinkControllerTest {
 //
 //        verify(userUrlRepository).findById(userId);
 //        verify(linkService).create(linkDto);
-//        assertSame(HttpStatus.OK, response.getStatusCode());
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
 //    }
 //
 //    @Test
 //    public void testCreateLinkForUserUserNotFound() {
 //        Long userId = 1L;
-//        LinkDto linkDto = new LinkDto();
+//        CreateLinkDto linkDto = new CreateLinkDto();
 //        when(userUrlRepository.findById(userId)).thenReturn(Optional.empty());
 //
 //        ResponseEntity<?> response = linkController.createLinkForUser(userId, linkDto);
 //
 //        verify(userUrlRepository).findById(userId);
 //        verify(linkService, never()).create(linkDto);
-//        assertSame(HttpStatus.NOT_FOUND, response.getStatusCode());
+//        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 //    }
 //
 //    @Test
@@ -100,10 +104,9 @@ public class LinkControllerTest {
 //
 //        ResponseEntity<?> response = linkController.deleteLinkForUser(userId, shortLink);
 //
-//
 //        verify(userUrlRepository).findById(userId);
 //        verify(linkService).delete(shortLink);
-//        assertSame(HttpStatus.OK, response.getStatusCode());
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
 //    }
 //
 //    @Test
@@ -116,6 +119,6 @@ public class LinkControllerTest {
 //
 //        verify(userUrlRepository).findById(userId);
 //        verify(linkService, never()).delete(shortLink);
-//        assertSame(HttpStatus.NOT_FOUND, response.getStatusCode());
+//        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 //    }
-}
+//}
