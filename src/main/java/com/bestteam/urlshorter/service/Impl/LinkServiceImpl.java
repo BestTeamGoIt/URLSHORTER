@@ -89,7 +89,7 @@ public class LinkServiceImpl implements LinkService {
     linkRepository.save(link);
   }
 
-  private List<LinkDto> getAllActive(){
+  public List<LinkDto> getAllActive(){
     return linkRepository
       .findAll()
       .stream()

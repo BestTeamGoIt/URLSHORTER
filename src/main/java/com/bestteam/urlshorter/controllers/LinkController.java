@@ -3,7 +3,8 @@ package com.bestteam.urlshorter.controllers;
 import com.bestteam.urlshorter.dto.CreateLinkDto;
 import com.bestteam.urlshorter.dto.LinkDto;
 import com.bestteam.urlshorter.exception.ItemNotFoundException;
-import com.bestteam.urlshorter.service.LinkService;
+
+import com.bestteam.urlshorter.service.Impl.LinkServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,21 +17,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LinkController {
 
-    private final LinkService linkService;
+    private final LinkServiceImpl linkService;
 
     @GetMapping("/all/active")
     public ResponseEntity<List<LinkDto>> getAllLinksForUser(@RequestParam Long userId) {
         try {
             List<LinkDto> links = linkService.getAllActive();
-            return ResponseEntity.ok(links);
-        } catch (ItemNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-    @GetMapping("/all")
-    public ResponseEntity<List<LinkDto>> getAllLinks() {
-        try {
-            List<LinkDto> links = linkService.getAll();
             return ResponseEntity.ok(links);
         } catch (ItemNotFoundException e) {
             return ResponseEntity.notFound().build();
