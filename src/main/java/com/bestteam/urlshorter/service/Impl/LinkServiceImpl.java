@@ -12,6 +12,7 @@ import com.bestteam.urlshorter.repository.LinkRepository;
 import com.bestteam.urlshorter.repository.UserUrlRepository;
 import com.bestteam.urlshorter.service.LinkService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -39,15 +40,8 @@ public class LinkServiceImpl implements LinkService {
 
 
   private Boolean isLinkValid(String link) {
-    try {
-      URL url = new URL(link);
-      HttpURLConnection huc = (HttpURLConnection) url.openConnection();
-      int responseCode = huc.getResponseCode();
-      return HttpURLConnection.HTTP_OK == responseCode;
-
-    } catch (IOException e) {
-      return false;
-    }
+    UrlValidator validator = new UrlValidator();
+    return validator.isValid(link);
   }
 
   private String generate(String link) {
