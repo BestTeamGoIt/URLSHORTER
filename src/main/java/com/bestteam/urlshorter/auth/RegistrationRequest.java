@@ -4,6 +4,7 @@ package com.bestteam.urlshorter.auth;
 
 
 import com.bestteam.urlshorter.constants.Role;
+import com.bestteam.urlshorter.validator.PasswordConstraint;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class RegistrationRequest {
     private String username;
     private String email;
-    @NotEmpty
+    @PasswordConstraint
     private String password;
     private Role role;
 }
