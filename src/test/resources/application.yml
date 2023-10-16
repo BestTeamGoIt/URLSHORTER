@@ -3,6 +3,8 @@ server:
 #Spring Boot
 
 spring:
+  flyway:
+    enabled: false
   datasource:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     username: ${CONTAINER.USERNAME}
