@@ -1,9 +1,7 @@
 package com.bestteam.urlshorter.dto;
 
-
 import lombok.*;
-
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -11,11 +9,12 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class LinkDto {
-  private String shortLink;
   private String link;
+  private String shortLink;
   private Long openCount;
+  private OffsetDateTime creationDateTime;
+  private OffsetDateTime expirationDateTime;
+  private Boolean isActive;
   private Long userId;
-  LocalDateTime creationDateTime;
-  LocalDateTime expirationDateTime = creationDateTime.plusDays(5);
-  Boolean isActive = true;
 }
+

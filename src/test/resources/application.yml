@@ -1,11 +1,14 @@
 server:
   port: 9999
+#Spring Boot
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/url_shorter_db
-    username: postgres
-    password: postgres
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    username: ${CONTAINER.USERNAME}
+    password: ${CONTAINER.PASSWORD}
+    url: ${CONTAINER.TCURL}
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -14,11 +17,6 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
         default_schema: public
-
-
-flyway:
-  baseline-on-migrate: true
-  locations: classpath:db/migration
 
 
 gcp:
@@ -33,3 +31,4 @@ application:
       expiration: 86400000 # a day
       refresh-token:
         expiration: 604800000 # 7 days
+
