@@ -164,4 +164,10 @@ public class LinkServiceImpl implements LinkService {
     linkMapper.merge(linkDto, link);
     linkRepository.save(link);
   }
+
+  public String getOriginalLink(String shortLink) {
+    return linkRepository.findById(shortLink)
+            .map(Link::getLink)
+            .orElseThrow(() -> new ItemNotFoundException(Link.class, shortLink));
+  }
 }
