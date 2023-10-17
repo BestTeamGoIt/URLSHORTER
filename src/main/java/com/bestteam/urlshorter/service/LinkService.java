@@ -11,5 +11,10 @@ public interface LinkService {
   void delete(String link);
   LinkDto get(String link);
   LinkDto create(CreateLinkDto linkDto);
+
+  List<LinkDto> getAllActive();
+
   List<LinkDto> getAllActiveById(Long userId);
+
+  String getOriginalLink(String shortLink);
 }
