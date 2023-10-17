@@ -2,7 +2,8 @@ package com.bestteam.urlshorter.models;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.OffsetDateTime;
+
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -11,13 +12,12 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "links")
+@Table(name = "link")
 public class Link {
     @Id
     @Column(name = "short_link")
     String shortLink;
 
-    @Column(name = "link")
     String link;
 
     @Column(name = "open_count")
@@ -25,14 +25,13 @@ public class Link {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creation_date")
-    OffsetDateTime creationDateTime;
+    LocalDateTime creationDateTime;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "expiration_date")
-    OffsetDateTime expirationDateTime;
+    LocalDateTime expirationDateTime = creationDateTime.plusDays(5);
 
-    @Column(name = "is_active")
-    Boolean isActive;
+    Boolean isActive = true;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
