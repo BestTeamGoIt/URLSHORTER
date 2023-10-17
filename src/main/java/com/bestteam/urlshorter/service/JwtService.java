@@ -1,5 +1,6 @@
 package com.bestteam.urlshorter.service;
 
+import com.bestteam.urlshorter.models.UserUrl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -28,31 +29,39 @@ public class JwtService {
     return extractClaim(token, Claims::getSubject);
   }
 
+  public String extractUserId(String token) {
+    return extractClaim(token, claims -> claims.get("userId", String.class));
+  }
+
   public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
     final Claims claims = extractAllClaims(token);
     return claimsResolver.apply(claims);
   }
 
-  public String generateToken(UserDetails userDetails) {
-    return generateToken(new HashMap<>(), userDetails);
+  public String generateToken(UserUrl userDetails) {
+
+    Map<String, Object> extraClaims = new HashMap<>();
+    extraClaims.put("userId", userDetails.getId()); // Add <link>userId</link> to the claims
+
+    return generateToken(extraClaims, userDetails);
   }
 
   public String generateToken(
       Map<String, Object> extraClaims,
-      UserDetails userDetails
+      UserUrl userDetails
   ) {
     return buildToken(extraClaims, userDetails, jwtExpiration);
   }
 
   public String generateRefreshToken(
-      UserDetails userDetails
+      UserUrl userDetails
   ) {
     return buildToken(new HashMap<>(), userDetails, refreshExpiration);
   }
 
   private String buildToken(
           Map<String, Object> extraClaims,
-          UserDetails userDetails,
+          UserUrl userDetails,
           long expiration
   ) {
     return Jwts

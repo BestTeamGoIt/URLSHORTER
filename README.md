@@ -25,3 +25,12 @@ set DB_PASSWORD=ваш_пароль
 
 Запустіть вашу програму.
 Ці команди встановлять змінні оточення лише для поточної сесії. 
+
+
+
+## Password Requirements
+
+When registering a user, you should consider the following password requirements:
+
+- The password must be at least 8 characters long.
+- The password must include digits, uppercase, and lowercase letters.

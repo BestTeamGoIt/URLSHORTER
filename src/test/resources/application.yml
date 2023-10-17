@@ -1,25 +1,24 @@
 server:
   port: 9999
+#Spring Boot
 
 spring:
-
+  flyway:
+    enabled: false
   datasource:
-    username: ${DB.USERNAME}
-    password: ${DB.PASSWORD}
-    url: ${DB.URL}
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    username: ${CONTAINER.USERNAME}
+    password: ${CONTAINER.PASSWORD}
+    url: ${CONTAINER.TCURL}
+
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
         default_schema: public
-
-
-flyway:
-  baseline-on-migrate: true
-  locations: classpath:db/migration
 
 
 gcp:
@@ -34,3 +33,4 @@ application:
       expiration: 86400000 # a day
       refresh-token:
         expiration: 604800000 # 7 days
+

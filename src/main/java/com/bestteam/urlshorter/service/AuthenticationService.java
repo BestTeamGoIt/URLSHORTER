@@ -2,6 +2,9 @@ package com.bestteam.urlshorter.service;
 
 
 import com.bestteam.urlshorter.auth.*;
+import com.bestteam.urlshorter.exception.ItemNotFoundException;
+import com.bestteam.urlshorter.exception.UserExistException;
+import com.bestteam.urlshorter.models.Link;
 import com.bestteam.urlshorter.models.Token;
 import com.bestteam.urlshorter.repository.TokenRepository;
 import com.bestteam.urlshorter.constants.TokenType;
@@ -40,7 +43,12 @@ public class AuthenticationService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final CustomAuthenticationProvider customAuthenticationProvider;
     public AuthenticationResponse register(RegistrationRequest request) {
+        userUrlRepository.findByUsername(request.getUsername()).ifPresent(user -> {
+            throw new UserExistException("Username: " + user.getUsername() + " is exist!");
+        });
+
         var user = UserUrl.builder()
+                .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
@@ -65,7 +73,7 @@ public class AuthenticationService {
 
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
-        revokeAllUserTokens(user);
+        deleteAllUserTokens(user);
         saveUserToken(user, jwtToken);
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
@@ -79,7 +87,7 @@ public class AuthenticationService {
 
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
-        revokeAllUserTokens(user);
+        deleteAllUserTokens(user);
         saveUserToken(user, jwtToken);
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
@@ -114,15 +122,11 @@ public class AuthenticationService {
         tokenRepository.save(token);
     }
 
-    private void revokeAllUserTokens(UserUrl userUrl) {
+    private void deleteAllUserTokens(UserUrl userUrl) {
         var validUserTokens = tokenRepository.findAllValidTokenByUser(userUrl.getId());
         if (validUserTokens.isEmpty())
             return;
-        validUserTokens.forEach(token -> {
-            token.setExpired(true);
-            token.setRevoked(true);
-        });
-        tokenRepository.saveAll(validUserTokens);
+        tokenRepository.deleteAll(validUserTokens);
     }
 
     public AuthenticationResponse refreshToken(
@@ -144,7 +148,7 @@ public class AuthenticationService {
                     .orElseThrow();
             if (jwtService.isTokenValid(refreshToken, user)) {
                 accessToken = jwtService.generateToken(user);
-                revokeAllUserTokens(user);
+                deleteAllUserTokens(user);
                 saveUserToken(user, accessToken);
                 var authResponse = AuthenticationResponse.builder()
                         .accessToken(accessToken)
