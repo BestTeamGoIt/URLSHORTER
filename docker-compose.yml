@@ -3,10 +3,19 @@ version: '3.8'
 services:
   postgres:
     image: postgres
-    container_name: URL-shorter
+    container_name: URL-shorter-postgres
     environment:
       POSTGRES_DB: url_shorter_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
       - "5433:5432"
+
+  app:
+    build:
+      context: /Users/daniil/IdeaProjects/URLSHORTER  # лінк де знаходиться Dockerfile
+    container_name: URL-shorter-app
+    ports:
+      - "8080:8080" # якщо треба можно змінити
+    depends_on:
+      - postgres
