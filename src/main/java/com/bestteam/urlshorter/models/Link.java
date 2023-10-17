@@ -31,6 +31,7 @@ public class Link {
     @Column(name = "expiration_date")
     LocalDateTime expirationDateTime = creationDateTime.plusDays(5);
 
+    @Column(name = "is_active")
     Boolean isActive = true;
 
     @ManyToOne
