@@ -77,11 +77,11 @@ dependencyManagement {
     }
 }
 springBoot {
-    mainClass = 'com.travelchat.UrlshorterApplication'
+    mainClass = 'com.bestteam.urlshorter.UrlshorterApplication'
 }
 
 bootJar {
-    archiveFileName = 'UrlShorter.jar'
+    archiveFileName = 'URLSHORTER-plain.jar'
 }
 
 tasks.named('test') {
