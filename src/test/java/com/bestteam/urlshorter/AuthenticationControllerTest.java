@@ -34,7 +34,7 @@ public class AuthenticationControllerTest extends SpringBootApplicationTest {
         String uid = UUID.randomUUID().toString();
         request.setUsername("Ivan_" + uid);
         request.setEmail("ivanargon+" + uid + "@gmail.com");
-        request.setPassword("223123123gsgd");
+        request.setPassword("AAA222ll");
         request.setRole(Role.USER);
 
         mockMvc.perform(post("/api/v1/auth/registration")
@@ -68,7 +68,7 @@ public class AuthenticationControllerTest extends SpringBootApplicationTest {
         String uid = UUID.randomUUID().toString();
         request.setUsername(uid);
         request.setEmail(uid + "@gmail.com");
-        request.setPassword("asfggdhgh2");
+        request.setPassword("AAA222ll");
         request.setRole(Role.USER);
 
         mockMvc.perform(post("/api/v1/auth/registration")
@@ -82,7 +82,7 @@ public class AuthenticationControllerTest extends SpringBootApplicationTest {
         AuthenticationRequest authenticationRequest = new AuthenticationRequest();
 
         authenticationRequest.setEmail(uid + "@gmail.com");
-        authenticationRequest.setPassword("asfggdhgh2");
+        authenticationRequest.setPassword("AAA222ll");
 
         mockMvc.perform(post("/api/v1/auth/authenticate")
                         .content(objectMapper.writeValueAsString(authenticationRequest))
@@ -99,7 +99,7 @@ public class AuthenticationControllerTest extends SpringBootApplicationTest {
         String uid = UUID.randomUUID().toString();
         request.setUsername(uid);
         request.setEmail(uid + "@gmail.com");
-        request.setPassword("asfggdhgh2");
+        request.setPassword("AAA222ll");
         request.setRole(Role.USER);
 
         mockMvc.perform(post("/api/v1/auth/registration")
@@ -113,7 +113,7 @@ public class AuthenticationControllerTest extends SpringBootApplicationTest {
         AuthenticationRequest authenticationRequest = new AuthenticationRequest();
 
         authenticationRequest.setEmail(uid + "@gmail.com");
-        authenticationRequest.setPassword("asfggdhgh2");
+        authenticationRequest.setPassword("AAA222ll");
 
         MvcResult mvcResult = mockMvc.perform(post("/api/v1/auth/authenticate")
                         .content(objectMapper.writeValueAsString(authenticationRequest))
@@ -136,5 +136,65 @@ public class AuthenticationControllerTest extends SpringBootApplicationTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(jsonPath("$.access_token").isNotEmpty())
                 .andExpect(jsonPath("$.refresh_token").isNotEmpty());
+    }
+    @Test
+    void registrationTest_IfPasswordDoesNotContainDigitsThenReturnBadRequest() throws Exception {
+        RegistrationRequest request = new RegistrationRequest();
+        String uid = UUID.randomUUID().toString();
+        request.setUsername(uid);
+        request.setEmail(uid + "@gmail.com");
+        request.setPassword("AAAATlllsss");
+        request.setRole(Role.USER);
+
+        mockMvc.perform(post("/api/v1/auth/registration")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print());
+    }
+    @Test
+    void registrationTest_IfPasswordDoesNotContainCapitalLettersThenReturnBadRequest() throws Exception {
+        RegistrationRequest request = new RegistrationRequest();
+        String uid = UUID.randomUUID().toString();
+        request.setUsername(uid);
+        request.setEmail(uid + "@gmail.com");
+        request.setPassword("77777aaaaa");
+        request.setRole(Role.USER);
+
+        mockMvc.perform(post("/api/v1/auth/registration")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print());
+    }
+    @Test
+    void registrationTest_IfPasswordDoesNotContainLowerLettersThenReturnBadRequest() throws Exception {
+        RegistrationRequest request = new RegistrationRequest();
+        String uid = UUID.randomUUID().toString();
+        request.setUsername(uid);
+        request.setEmail(uid + "@gmail.com");
+        request.setPassword("77777AAAAAA");
+        request.setRole(Role.USER);
+
+        mockMvc.perform(post("/api/v1/auth/registration")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print());
+    }
+    @Test
+    void registrationTest_IfPasswordLengthIsLessThenEightThenReturnBadRequest() throws Exception {
+        RegistrationRequest request = new RegistrationRequest();
+        String uid = UUID.randomUUID().toString();
+        request.setUsername(uid);
+        request.setEmail(uid + "@gmail.com");
+        request.setPassword("11AAaa");
+        request.setRole(Role.USER);
+
+        mockMvc.perform(post("/api/v1/auth/registration")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print());
     }
 }
