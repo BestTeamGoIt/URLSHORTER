@@ -1,7 +1,7 @@
-server:
-  port: 9999
-
 spring:
+  profiles:
+    active: default
+
   datasource:
     url: jdbc:postgresql://localhost:5433/url_shorter_db
     username: postgres
@@ -33,3 +33,4 @@ application:
       expiration: 86400000 # a day
       refresh-token:
         expiration: 604800000 # 7 days
+
