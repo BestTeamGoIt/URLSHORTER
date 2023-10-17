@@ -1,6 +1,5 @@
 package com.bestteam.urlshorter.auth;
 
-
 import com.bestteam.urlshorter.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,21 +13,17 @@ import java.io.IOException;
 @RequestMapping(path = "/api/v1/auth")
 public class AuthenticationController {
 
-
     private final AuthenticationService authenticationService;
-
-
 
     public AuthenticationController(@Lazy AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
 
-
     @PostMapping("/registration")
     public ResponseEntity<AuthenticationResponse> register(
-            @Valid
-            @RequestBody RegistrationRequest request) {
-      return ResponseEntity.ok(authenticationService.register(request));
+            @Valid @RequestBody RegistrationRequest request
+    ) {
+        return ResponseEntity.ok(authenticationService.register(request));
     }
 
     @PostMapping("/authenticate")
@@ -38,7 +33,6 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 
-
     @PostMapping("/refresh-token")
     public ResponseEntity<AuthenticationResponse> refreshToken(
             HttpServletRequest request,
@@ -47,5 +41,4 @@ public class AuthenticationController {
         AuthenticationResponse authenticationResponse = authenticationService.refreshToken(request, response);
         return ResponseEntity.ok(authenticationResponse);
     }
-
 }

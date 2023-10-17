@@ -2,6 +2,7 @@ server:
   port: 9999
 
 spring:
+
   datasource:
     url: jdbc:postgresql://localhost:5433/url_shorter_db
     username: postgres
@@ -11,11 +12,13 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
         default_schema: public
+
 
 
   flyway:
@@ -26,6 +29,7 @@ spring:
     #    username: ${DB_USERNAME}
     #    password: ${DB_PASSWORD}
     locations: classpath:db/migration
+
 
 
 gcp:
@@ -40,3 +44,4 @@ application:
       expiration: 86400000 # a day
       refresh-token:
         expiration: 604800000 # 7 days
+

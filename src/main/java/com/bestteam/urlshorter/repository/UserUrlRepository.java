@@ -17,6 +17,7 @@ public interface UserUrlRepository extends JpaRepository<UserUrl, Long> {
     @Query("select distinct u from UserUrl u where u.email = ?1")
     UserUrl findByEmailFetchRoes(String email);
     Optional<UserUrl> findByEmail(String email);
+    Optional<UserUrl> findByUsername(String username);
     @org.springframework.transaction.annotation.Transactional
     @Modifying
     @Query("UPDATE UserUrl u " +
@@ -26,4 +27,6 @@ public interface UserUrlRepository extends JpaRepository<UserUrl, Long> {
     @Modifying
     @Query("UPDATE UserUrl u SET u.authType = ?2 WHERE u.username = ?1")
     public void updateAuthenticationType(String username, AuthenticationType authType);
+
+
 }
