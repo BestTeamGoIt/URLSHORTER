@@ -19,3 +19,4 @@ services:
       - "8080:8080" # якщо треба можно змінити
     depends_on:
       - postgres
+    ommand: java -jar URLSHORTER-plain.jar
