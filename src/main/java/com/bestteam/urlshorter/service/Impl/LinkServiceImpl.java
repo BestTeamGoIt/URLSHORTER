@@ -36,6 +36,8 @@ public class LinkServiceImpl implements LinkService {
   private final UserUrlRepository userRepository;
   private final Mapper mapper;
   private final LinkMapper linkMapper;
+
+  private LinkCacheService cacheService;
   private final Logger logger = LoggerFactory.getLogger(LinkServiceImpl.class);
 
 
@@ -137,6 +139,7 @@ public class LinkServiceImpl implements LinkService {
     );
 
     linkRepository.save(linkEntity);
+    cacheService.addToCache(linkEntity);
     return linkMapper.toDto(linkEntity);
   }
 
