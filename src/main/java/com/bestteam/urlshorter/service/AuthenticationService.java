@@ -43,9 +43,6 @@ public class AuthenticationService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final CustomAuthenticationProvider customAuthenticationProvider;
     public AuthenticationResponse register(RegistrationRequest request) {
-        userUrlRepository.findByUsername(request.getUsername()).ifPresent(user -> {
-            throw new UserExistException("Username: " + user.getUsername() + " is exist!");
-        });
 
         var user = UserUrl.builder()
                 .username(request.getUsername())
