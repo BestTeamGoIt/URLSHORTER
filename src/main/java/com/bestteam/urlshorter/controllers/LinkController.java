@@ -4,8 +4,10 @@ import com.bestteam.urlshorter.dto.CreateLinkDto;
 import com.bestteam.urlshorter.dto.LinkDto;
 import com.bestteam.urlshorter.exception.ItemNotFoundException;
 
-import com.bestteam.urlshorter.service.Impl.LinkServiceImpl;
+import com.bestteam.urlshorter.service.LinkService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +19,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LinkController {
 
-    private final LinkServiceImpl linkService;
+    private final LinkService linkService;
+    @Value("${app.hostname}")
+    private String hostName ;
 
     @GetMapping("/all/active")
     public ResponseEntity<List<LinkDto>> getAllLinksForUser(@RequestParam Long userId) {
@@ -40,10 +44,11 @@ public class LinkController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createLinkForUser( @RequestBody CreateLinkDto createLinkDto) {
+    public ResponseEntity<String> createLinkForUser(@RequestBody CreateLinkDto createLinkDto) {
         try {
-            linkService.create(createLinkDto);
-            return ResponseEntity.ok().build();
+            String shortLink = linkService.create(createLinkDto).getShortLink();
+            String redirectUrl = hostName + "/v1/redirect/" + shortLink;
+            return ResponseEntity.status(HttpStatus.CREATED).body(redirectUrl);
         } catch (ItemNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
@@ -59,6 +64,18 @@ public class LinkController {
             return ResponseEntity.notFound().build();
         }
     }
+    @GetMapping("/redirect/{shortLink}")
+    public ResponseEntity<Void> redirectToOriginalLink(@PathVariable String shortLink, HttpServletResponse response) {
+        try {
+            String originalLink = linkService.getOriginalLink(shortLink);
+
+            response.setHeader("Location", originalLink);
+            return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).build();
+        } catch (ItemNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteLinkForUser(@RequestParam Long userId, @RequestParam String shortLink) {
