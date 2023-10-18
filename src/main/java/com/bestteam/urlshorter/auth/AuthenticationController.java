@@ -1,5 +1,6 @@
 package com.bestteam.urlshorter.auth;
 
+import com.bestteam.urlshorter.repository.UserUrlRepository;
 import com.bestteam.urlshorter.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,9 +15,11 @@ import java.io.IOException;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
+    private final UserUrlRepository userUrlRepository;
 
-    public AuthenticationController(@Lazy AuthenticationService authenticationService) {
+    public AuthenticationController(@Lazy AuthenticationService authenticationService, UserUrlRepository userUrlRepository) {
         this.authenticationService = authenticationService;
+        this.userUrlRepository = userUrlRepository;
     }
 
     @PostMapping("/registration")
