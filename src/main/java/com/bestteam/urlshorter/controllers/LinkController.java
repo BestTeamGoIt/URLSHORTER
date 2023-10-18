@@ -4,7 +4,7 @@ import com.bestteam.urlshorter.dto.CreateLinkDto;
 import com.bestteam.urlshorter.dto.LinkDto;
 import com.bestteam.urlshorter.exception.ItemNotFoundException;
 
-import com.bestteam.urlshorter.service.Impl.LinkServiceImpl;
+import com.bestteam.urlshorter.service.LinkService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LinkController {
 
-    private final LinkServiceImpl linkService;
+    private final LinkService linkService;
     @Value("${app.hostname}")
     private String hostName ;
 
